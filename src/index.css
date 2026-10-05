@@ -1,0 +1,324 @@
+@import "tailwindcss";
+
+@theme {
+  --font-script: "Noto Serif Tamil", Georgia, serif;
+  --font-serif: "Noto Serif Tamil", Georgia, serif;
+  --font-caps: "Catamaran", sans-serif;
+  --font-tamil: "Catamaran", sans-serif;
+
+  --color-maroon: #5e1220;
+  --color-maroondeep: #440d18;
+  --color-maroonsoft: #7a1e2d;
+  --color-gold: #c79a3b;
+  --color-goldlight: #e9cf87;
+  --color-golddeep: #8a6a24;
+  --color-cream: #faf1dd;
+  --color-creamdeep: #f0e2c4;
+  --color-inkwine: #3b1220;
+  --color-leaf: #47603b;
+  --color-marigold: #e8890c;
+  --color-marigoldlight: #f2b705;
+
+  --animate-spin-slow: spin 16s linear infinite;
+  --animate-glow: glow 2.8s ease-in-out infinite;
+  --animate-eq-1: eq 0.9s ease-in-out infinite;
+  --animate-eq-2: eq 0.9s ease-in-out 0.28s infinite;
+  --animate-eq-3: eq 0.9s ease-in-out 0.56s infinite;
+  --animate-petal: petal 13s linear infinite;
+  --animate-sway: sway 5.5s ease-in-out infinite;
+
+  @keyframes eq {
+    0%, 100% { transform: scaleY(0.3); }
+    50% { transform: scaleY(1); }
+  }
+  @keyframes glow {
+    0%, 100% { opacity: 0.45; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.06); }
+  }
+  @keyframes petal {
+    0% { transform: translate3d(0, -6vh, 0) rotate(0deg); opacity: 0; }
+    8% { opacity: 0.85; }
+    88% { opacity: 0.85; }
+    100% { transform: translate3d(4vw, 104vh, 0) rotate(310deg); opacity: 0; }
+  }
+  @keyframes sway {
+    0%, 100% { transform: rotate(-7deg); }
+    50% { transform: rotate(9deg); }
+  }
+}
+
+body {
+  background: var(--color-maroondeep);
+  color: var(--color-cream);
+  font-family: var(--font-tamil);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-gold);
+  color: var(--color-maroondeep);
+}
+
+/* ---------- traditional woven-silk kolam patterns ---------- */
+
+.bg-kolam {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Cg fill='%23c79a3b'%3E%3Ccircle cx='14' cy='14' r='1.5' fill-opacity='0.5'/%3E%3Ccircle cx='42' cy='14' r='1.5' fill-opacity='0.5'/%3E%3Ccircle cx='14' cy='42' r='1.5' fill-opacity='0.5'/%3E%3Ccircle cx='42' cy='42' r='1.5' fill-opacity='0.5'/%3E%3Ccircle cx='28' cy='28' r='2.1' fill-opacity='0.4'/%3E%3C/g%3E%3Cpath d='M28 7 L49 28 L28 49 L7 28 Z' fill='none' stroke='%23c79a3b' stroke-opacity='0.2'/%3E%3C/svg%3E");
+}
+
+.bg-kolam-light {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Cg fill='%238a6a24'%3E%3Ccircle cx='14' cy='14' r='1.5' fill-opacity='0.22'/%3E%3Ccircle cx='42' cy='14' r='1.5' fill-opacity='0.22'/%3E%3Ccircle cx='14' cy='42' r='1.5' fill-opacity='0.22'/%3E%3Ccircle cx='42' cy='42' r='1.5' fill-opacity='0.22'/%3E%3Ccircle cx='28' cy='28' r='2' fill-opacity='0.16'/%3E%3C/g%3E%3Cpath d='M28 7 L49 28 L28 49 L7 28 Z' fill='none' stroke='%238a6a24' stroke-opacity='0.1'/%3E%3C/svg%3E");
+}
+
+/* ---------- scroll reveal ---------- */
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(36px);
+  transition:
+    opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-reveal].in-view {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- 3d card helpers ---------- */
+
+.persp {
+  perspective: 1500px;
+}
+
+.card-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hide {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* ---------- small utilities ---------- */
+
+.caps {
+  font-family: var(--font-caps);
+  font-weight: 500;
+  letter-spacing: 0.22em;
+}
+
+.mask-fade-x {
+  -webkit-mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+}
+
+/* ============================================================
+   RESPONSIVE LAYER — media queries for every device class:
+   small phones → phones → tablets → laptops → large desktops,
+   plus landscape heights, touch screens, notches and
+   reduced-motion. (No framework conflicts: Tailwind's sm/md/lg
+   utilities compile to media queries; these rules tune the
+   remaining fixed elements per breakpoint.)
+============================================================ */
+
+body {
+  overflow-x: hidden;
+}
+
+/* fluid temple-arch couple portrait */
+.couple-img {
+  height: clamp(250px, 42vh, 340px);
+  width: auto;
+  aspect-ratio: 11 / 15;
+}
+
+/* notch-aware floating buttons (iPhone / Android safe areas) */
+@supports (padding: max(0px)) {
+  .fab-music {
+    bottom: max(1.25rem, env(safe-area-inset-bottom));
+    right: max(1.25rem, env(safe-area-inset-right));
+  }
+  .fab-menu {
+    top: max(1.5rem, env(safe-area-inset-top));
+  }
+  .fab-contact {
+    top: max(1.5rem, env(safe-area-inset-top));
+    right: max(1.25rem, env(safe-area-inset-right));
+  }
+}
+
+/* ---------- extra-small phones (≤ 389px: iPhone SE & below) ---------- */
+@media (max-width: 389.98px) {
+  .site-frame {
+    inset: 0.5rem;
+  }
+  .site-frame > svg {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+  .fab {
+    height: 3rem;
+    width: 3rem;
+  }
+  .fab-label {
+    font-size: 0.5rem;
+    letter-spacing: 0.1em;
+  }
+  .fab-contact {
+    top: max(1.25rem, env(safe-area-inset-top));
+  }
+  .fab-menu {
+    top: max(1.25rem, env(safe-area-inset-top));
+  }
+  .hero-inner {
+    margin-top: 2.75rem;
+  }
+  .couple-img {
+    height: clamp(230px, 40vh, 300px);
+  }
+  .cd-box {
+    height: 2.9rem;
+    width: 2.9rem;
+  }
+  .cd-num {
+    font-size: 1.05rem;
+  }
+  .cd-label {
+    font-size: 0.5rem;
+  }
+  .section-pad {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+  .section-pad-b {
+    padding-bottom: 4rem;
+  }
+  .drawer-panel {
+    width: min(94vw, 340px);
+  }
+  .envelope-card {
+    transform: scale(0.92);
+  }
+  .envelope-hint {
+    margin-top: 3.5rem;
+  }
+}
+
+/* ---------- tablets & small laptops (640–1023px) ---------- */
+@media (min-width: 640px) and (max-width: 1023.98px) {
+  .couple-img {
+    height: 360px;
+  }
+  .section-pad {
+    padding-top: 6.5rem;
+    padding-bottom: 6.5rem;
+  }
+  .section-pad-b {
+    padding-bottom: 6.5rem;
+  }
+  .drawer-panel {
+    width: 360px;
+  }
+}
+
+/* ---------- large desktops (≥ 1440px) ---------- */
+@media (min-width: 1440px) {
+  .site-frame {
+    inset: 1.5rem;
+  }
+  .site-frame > svg {
+    width: 3rem;
+    height: 3rem;
+  }
+  .couple-img {
+    height: 400px;
+  }
+  .hero-inner {
+    margin-top: 5.5rem;
+    max-width: 56rem;
+  }
+  .section-pad {
+    padding-top: 8rem;
+    padding-bottom: 8rem;
+  }
+  .section-pad-b {
+    padding-bottom: 8rem;
+  }
+}
+
+/* ---------- ultra-wide (≥ 2000px) ---------- */
+@media (min-width: 2000px) {
+  body {
+    font-size: 1.125rem;
+  }
+}
+
+/* ---------- short landscape screens (phones rotated, ≤ 560px tall) ---------- */
+@media (max-height: 560px) and (orientation: landscape) {
+  .envelope-card {
+    transform: scale(0.78);
+  }
+  .envelope-hint {
+    margin-top: 2.25rem;
+  }
+  .hero-garland {
+    height: 3.25rem;
+  }
+  .hero-inner {
+    margin-top: 2.25rem;
+  }
+  .couple-img {
+    height: clamp(170px, 52vh, 230px);
+  }
+  .cd-box {
+    height: 2.75rem;
+    width: 2.75rem;
+  }
+  .cd-num {
+    font-size: 1rem;
+  }
+  .fab {
+    height: 3rem;
+    width: 3rem;
+  }
+  .fab-menu {
+    top: max(1.25rem, env(safe-area-inset-top));
+  }
+  .fab-contact {
+    top: max(1.25rem, env(safe-area-inset-top));
+  }
+  .fab-music {
+    bottom: 1rem;
+    right: 1rem;
+  }
+  .section-pad {
+    padding-top: 3.5rem;
+    padding-bottom: 3.5rem;
+  }
+  .section-pad-b {
+    padding-bottom: 3.5rem;
+  }
+}
+
+/* ---------- touch devices: ≥ 44px comfortable tap targets ---------- */
+@media (hover: none) and (pointer: coarse) {
+  .drawer-panel nav button {
+    padding-top: 1.1rem;
+    padding-bottom: 1.1rem;
+  }
+  .drawer-panel :is(a, button) {
+    min-height: 2.75rem;
+  }
+}
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.15s !important;
+    scroll-behavior: auto !important;
+  }
+}
