@@ -1,207 +1,457 @@
-/* Traditional South Indian ornaments, hand-drawn in SVG:
-   marigold garlands, kolam corners, kuthu vilakku lamp, lotus divider. */
+import type { HTMLAttributes } from "react";
 
-/* ---------------------------------------------------------------- Garland */
+type OrnamentProps = HTMLAttributes<HTMLDivElement>;
 
-type Strand = { x0: number; x1: number; depth: number; step: number };
+/* =========================================================
+   GARLAND
+========================================================= */
 
-function strandPoints({ x0, x1, depth, step }: Strand) {
-  const pts: { x: number; y: number; i: number }[] = [];
-  const w = x1 - x0;
-  const n = Math.max(7, Math.floor(Math.abs(w) / step));
-  for (let i = 0; i <= n; i++) {
-    const t = i / n;
-    const x = x0 + w * t;
-    const y = 2 * (1 - t) * t * depth * 2; // quadratic control = depth*2 → apex = depth
-    pts.push({ x, y, i });
-  }
-  return pts;
-}
-
-function Marigold({ x, y, r, tone }: { x: number; y: number; r: number; tone: 0 | 1 }) {
-  const petal = tone === 0 ? "#e8890c" : "#f2b705";
-  const core = tone === 0 ? "#b45309" : "#e8890c";
-  const petals = [];
-  for (let k = 0; k < 7; k++) {
-    const a = (k / 7) * Math.PI * 2;
-    petals.push(
-      <circle key={k} cx={x + Math.cos(a) * r * 0.62} cy={y + Math.sin(a) * r * 0.62} r={r * 0.58} fill={petal} />
-    );
-  }
-  return (
-    <g>
-      {petals}
-      <circle cx={x} cy={y} r={r * 0.42} fill={core} />
-    </g>
-  );
-}
-
-export function Garland({ className = "" }: { className?: string }) {
-  const strands: Strand[] = [
-    { x0: -30, x1: 640, depth: 74, step: 34 },
-    { x0: 560, x1: 1230, depth: 96, step: 34 },
-    { x0: 210, x1: 990, depth: 52, step: 32 },
-  ];
-  return (
-    <svg
-      viewBox="0 0 1200 150"
-      preserveAspectRatio="none"
-      className={className}
-      aria-hidden
-    >
-      {strands.map((s, si) => {
-        const midX = (s.x0 + s.x1) / 2;
-        return (
-          <g key={si} opacity={si === 2 ? 0.9 : 1}>
-            <path
-              d={`M ${s.x0} -6 Q ${midX} ${s.depth * 2} ${s.x1} -6`}
-              fill="none"
-              stroke="#5c6b3a"
-              strokeWidth={2.4}
-              opacity={0.85}
-            />
-            {strandPoints(s).map((p) =>
-              p.i % 5 === 3 ? (
-                <ellipse
-                  key={p.i}
-                  cx={p.x}
-                  cy={p.y + 3}
-                  rx={3.2}
-                  ry={6}
-                  fill="#47603b"
-                  transform={`rotate(${(p.i % 2 ? -18 : 18) + 0} ${p.x} ${p.y + 3})`}
-                />
-              ) : (
-                <Marigold key={p.i} x={p.x} y={p.y + 4} r={p.i % 2 ? 6.4 : 5.4} tone={p.i % 3 === 0 ? 1 : 0} />
-              )
-            )}
-          </g>
-        );
-      })}
-    </svg>
-  );
-}
-
-/* ------------------------------------------------------------- Kolam corner */
-
-export function KolamCorner({
+export function Garland({
   className = "",
-  rotate = 0,
-}: {
-  className?: string;
-  rotate?: number;
-}) {
-  const dots = [20, 40, 60];
+  ...props
+}: OrnamentProps) {
   return (
-    <svg
-      viewBox="0 0 80 80"
-      className={className}
-      style={{ transform: `rotate(${rotate}deg)` }}
-      aria-hidden
+    <div
+      className={`pointer-events-none ${className}`}
+      {...props}
     >
-      <g stroke="currentColor" fill="none" strokeWidth="1.1">
-        <path d="M40 4 L76 40 L40 76 L4 40 Z" />
-        <path d="M40 16 L64 40 L40 64 L16 40 Z" opacity={0.7} />
-        <circle cx="40" cy="40" r="7" opacity={0.55} />
-      </g>
-      <g fill="currentColor">
-        {dots.flatMap((y) =>
-          dots.map((x) => <circle key={`${x}-${y}`} cx={x} cy={y} r={1.7} />)
-        )}
-        <circle cx="40" cy="40" r="2.4" />
-      </g>
-    </svg>
+      <div className="relative h-full w-full">
+
+        {/* Main Garland Curve */}
+        <div
+          className="
+            absolute
+            left-[5%]
+            right-[5%]
+            top-4
+            h-20
+            rounded-b-[50%]
+            border-b-2
+            border-gold/60
+          "
+        />
+
+        {/* Left Flower Group */}
+        <div className="absolute left-[8%] top-3 flex items-center gap-1">
+          <span className="h-3 w-3 rounded-full bg-gold" />
+          <span className="h-5 w-5 rounded-full bg-goldlight" />
+          <span className="h-3 w-3 rounded-full bg-gold" />
+        </div>
+
+        {/* Left Hanging Flower */}
+        <div className="absolute left-[13%] top-8 h-10 w-px bg-gold/60" />
+
+        {/* Center Flower Group */}
+        <div className="absolute left-1/2 top-1 flex -translate-x-1/2 items-center gap-1">
+          <span className="h-4 w-4 rounded-full bg-gold" />
+          <span className="h-7 w-7 rounded-full border-2 border-gold bg-goldlight/30" />
+          <span className="h-4 w-4 rounded-full bg-gold" />
+        </div>
+
+        {/* Center Hanging */}
+        <div className="absolute left-1/2 top-7 h-12 w-px -translate-x-1/2 bg-gold/60" />
+
+        {/* Right Flower Group */}
+        <div className="absolute right-[8%] top-3 flex items-center gap-1">
+          <span className="h-3 w-3 rounded-full bg-gold" />
+          <span className="h-5 w-5 rounded-full bg-goldlight" />
+          <span className="h-3 w-3 rounded-full bg-gold" />
+        </div>
+
+        {/* Right Hanging Flower */}
+        <div className="absolute right-[13%] top-8 h-10 w-px bg-gold/60" />
+
+        {/* Small Decorative Flowers */}
+        <div className="absolute left-[25%] top-12 flex gap-1">
+          <span className="h-2 w-2 rounded-full bg-goldlight" />
+          <span className="h-3 w-3 rounded-full bg-gold" />
+          <span className="h-2 w-2 rounded-full bg-goldlight" />
+        </div>
+
+        <div className="absolute right-[25%] top-12 flex gap-1">
+          <span className="h-2 w-2 rounded-full bg-goldlight" />
+          <span className="h-3 w-3 rounded-full bg-gold" />
+          <span className="h-2 w-2 rounded-full bg-goldlight" />
+        </div>
+      </div>
+    </div>
   );
 }
 
-/* ------------------------------------------------------------------ Lotus */
+/* =========================================================
+   LAMP VILAKKU
+========================================================= */
 
-export function Lotus({ className = "" }: { className?: string }) {
+export function LampVilakku({
+  className = "",
+  ...props
+}: OrnamentProps) {
   return (
-    <svg viewBox="0 0 72 44" className={className} aria-hidden>
-      <g fill="currentColor">
-        <path d="M36 4 C41.5 13 41.5 22 36 32 C30.5 22 30.5 13 36 4 Z" />
-        <path d="M18 10 C26.5 15 31 22 33 32 C24 29 18.5 21 18 10 Z" opacity={0.82} />
-        <path d="M54 10 C45.5 15 41 22 39 32 C48 29 53.5 21 54 10 Z" opacity={0.82} />
-        <path d="M6 22 C14 24.5 21 29 25 35 C16.5 34.5 9 30 6 22 Z" opacity={0.6} />
-        <path d="M66 22 C58 24.5 51 29 47 35 C55.5 34.5 63 30 66 22 Z" opacity={0.6} />
-      </g>
-      <path d="M14 40 Q36 34 58 40" stroke="currentColor" fill="none" strokeWidth="1.6" strokeLinecap="round" />
-    </svg>
+    <div
+      className={`flex items-center justify-center ${className}`}
+      {...props}
+    >
+      <div className="relative flex flex-col items-center">
+
+        {/* Flame Glow */}
+        <div className="absolute -top-3 h-10 w-10 rounded-full bg-gold/20 blur-xl" />
+
+        {/* Flame */}
+        <div
+          className="
+            relative
+            mb-1
+            h-7
+            w-4
+            rounded-full
+            bg-goldlight
+            shadow-[0_0_18px_rgba(212,175,55,0.8)]
+          "
+        />
+
+        {/* Wick */}
+        <div className="h-2 w-px bg-gold" />
+
+        {/* Lamp Bowl */}
+        <div
+          className="
+            h-5
+            w-16
+            rounded-b-full
+            border-2
+            border-gold
+            bg-gold/10
+          "
+        />
+
+        {/* Lamp Stem */}
+        <div className="h-4 w-1 bg-gold" />
+
+        {/* Lamp Base */}
+        <div className="h-2 w-12 rounded-full bg-gold" />
+
+        {/* Bottom Base */}
+        <div className="mt-1 h-1.5 w-16 rounded-full bg-gold/70" />
+      </div>
+    </div>
   );
 }
 
-/* --------------------------------------------------------- Kuthu Vilakku */
+/* =========================================================
+   LOTUS
+========================================================= */
 
-export function LampVilakku({ className = "" }: { className?: string }) {
+export function Lotus({
+  className = "",
+  ...props
+}: OrnamentProps) {
   return (
-    <svg viewBox="0 0 100 148" className={className} aria-hidden>
-      <defs>
-        <radialGradient id="flameGlow" cx="50%" cy="42%" r="50%">
-          <stop offset="0%" stopColor="#f2b705" stopOpacity="0.75" />
-          <stop offset="100%" stopColor="#f2b705" stopOpacity="0" />
-        </radialGradient>
-        <linearGradient id="brass" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#8a6a24" />
-          <stop offset="45%" stopColor="#e9cf87" />
-          <stop offset="100%" stopColor="#8a6a24" />
-        </linearGradient>
-      </defs>
+    <div
+      className={`flex items-center justify-center ${className}`}
+      {...props}
+    >
+      <div className="relative h-16 w-24">
 
-      <circle cx="50" cy="30" r="30" fill="url(#flameGlow)" />
-      {/* flame */}
-      <path d="M50 12 C56 22 57 30 50 37 C43 30 44 22 50 12 Z" fill="#f2b705" />
-      <path d="M50 21 C53 26 53 30 50 33.4 C47 30 47 26 50 21 Z" fill="#fff6d8" />
+        {/* Center Petal */}
+        <span
+          className="
+            absolute
+            left-1/2
+            top-0
+            h-12
+            w-7
+            -translate-x-1/2
+            rounded-full
+            border
+            border-gold/50
+            bg-maroon/20
+          "
+        />
 
-      {/* top oil cup */}
-      <ellipse cx="50" cy="43" rx="24" ry="5.5" fill="url(#brass)" />
-      <ellipse cx="50" cy="41.4" rx="18" ry="3.4" fill="#8a6a24" opacity={0.55} />
-      {/* stem + tiers */}
-      <rect x="46.5" y="48" width="7" height="26" fill="url(#brass)" />
-      <ellipse cx="50" cy="76" rx="31" ry="4.6" fill="url(#brass)" />
-      <rect x="47.5" y="80" width="5" height="20" fill="url(#brass)" />
-      <ellipse cx="50" cy="102" rx="37" ry="5" fill="url(#brass)" />
-      <rect x="48" y="106" width="4" height="10" fill="url(#brass)" />
-      {/* base */}
-      <path d="M34 116 H66 L72 132 H28 Z" fill="url(#brass)" />
-      <ellipse cx="50" cy="133" rx="24" ry="4.4" fill="url(#brass)" />
-      {/* decorative dots */}
-      <g fill="#8a6a24">
-        <circle cx="28" cy="42" r="1.6" />
-        <circle cx="72" cy="42" r="1.6" />
-        <circle cx="19" cy="76" r="1.5" />
-        <circle cx="81" cy="76" r="1.5" />
-      </g>
-    </svg>
+        {/* Left Center Petal */}
+        <span
+          className="
+            absolute
+            left-[25%]
+            top-4
+            h-10
+            w-7
+            -rotate-30
+            rounded-full
+            border
+            border-gold/50
+            bg-maroon/20
+          "
+        />
+
+        {/* Right Center Petal */}
+        <span
+          className="
+            absolute
+            right-[25%]
+            top-4
+            h-10
+            w-7
+            rotate-30
+            rounded-full
+            border
+            border-gold/50
+            bg-maroon/20
+          "
+        />
+
+        {/* Far Left Petal */}
+        <span
+          className="
+            absolute
+            left-1
+            top-7
+            h-7
+            w-7
+            -rotate-45
+            rounded-full
+            border
+            border-gold/40
+            bg-maroon/10
+          "
+        />
+
+        {/* Far Right Petal */}
+        <span
+          className="
+            absolute
+            right-1
+            top-7
+            h-7
+            w-7
+            rotate-45
+            rounded-full
+            border
+            border-gold/40
+            bg-maroon/10
+          "
+        />
+
+        {/* Lotus Base */}
+        <div
+          className="
+            absolute
+            bottom-1
+            left-1/2
+            h-2
+            w-16
+            -translate-x-1/2
+            rounded-full
+            bg-gold/50
+          "
+        />
+      </div>
+    </div>
   );
 }
 
-/* ---------------------------------------------------------------- Divider */
+/* =========================================================
+   ORNATE DIVIDER
+========================================================= */
 
 export function OrnateDivider({
   className = "",
-  tone = "gold",
-}: {
-  className?: string;
-  tone?: "gold" | "maroon";
-}) {
-  const line = tone === "gold" ? "bg-gold/60" : "bg-maroon/30";
-  const dot = tone === "gold" ? "text-gold" : "text-maroon/60";
+  ...props
+}: OrnamentProps) {
   return (
-    <div className={`flex items-center justify-center gap-3 ${className}`} aria-hidden>
-      <span className={`h-px w-16 sm:w-24 ${line}`} />
-      <svg viewBox="0 0 20 20" className={`h-3 w-3 ${dot}`}>
-        <path d="M10 0 L20 10 L10 20 L0 10 Z" fill="currentColor" opacity={0.85} />
-        <circle cx="10" cy="10" r="2.4" fill="currentColor" />
-      </svg>
-      <svg viewBox="0 0 20 20" className={`h-4 w-4 -rotate-45 ${dot}`}>
-        <path d="M10 0 L20 10 L10 20 L0 10 Z" fill="currentColor" opacity={0.55} />
-      </svg>
-      <svg viewBox="0 0 20 20" className={`h-3 w-3 ${dot}`}>
-        <path d="M10 0 L20 10 L10 20 L0 10 Z" fill="currentColor" opacity={0.85} />
-        <circle cx="10" cy="10" r="2.4" fill="currentColor" />
-      </svg>
-      <span className={`h-px w-16 sm:w-24 ${line}`} />
+    <div
+      className={`flex w-full items-center justify-center gap-4 ${className}`}
+      {...props}
+    >
+
+      {/* Left Line */}
+      <div
+        className="
+          h-px
+          flex-1
+          bg-gradient-to-r
+          from-transparent
+          via-gold/40
+          to-gold
+        "
+      />
+
+      {/* Center Ornament */}
+      <div className="relative flex h-10 w-10 items-center justify-center">
+
+        {/* Outer Circle */}
+        <span
+          className="
+            absolute
+            h-9
+            w-9
+            rounded-full
+            border
+            border-gold/40
+          "
+        />
+
+        {/* Inner Diamond */}
+        <span
+          className="
+            absolute
+            h-4
+            w-4
+            rotate-45
+            border
+            border-gold
+            bg-gold/10
+          "
+        />
+
+        {/* Center Dot */}
+        <span className="relative h-1.5 w-1.5 rounded-full bg-gold" />
+      </div>
+
+      {/* Right Line */}
+      <div
+        className="
+          h-px
+          flex-1
+          bg-gradient-to-l
+          from-transparent
+          via-gold/40
+          to-gold
+        "
+      />
+    </div>
+  );
+}
+
+/* =========================================================
+   KOLAM CORNER
+========================================================= */
+
+export function KolamCorner({
+  className = "",
+  ...props
+}: OrnamentProps) {
+  return (
+    <div
+      className={`pointer-events-none ${className}`}
+      {...props}
+    >
+      <div className="relative h-28 w-28 opacity-60">
+
+        {/* Horizontal Corner Line */}
+        <div className="absolute left-0 top-0 h-px w-24 bg-gold/70" />
+
+        {/* Vertical Corner Line */}
+        <div className="absolute left-0 top-0 h-24 w-px bg-gold/70" />
+
+        {/* Decorative Dot 1 */}
+        <span
+          className="
+            absolute
+            left-5
+            top-5
+            h-2
+            w-2
+            rounded-full
+            bg-gold
+          "
+        />
+
+        {/* Decorative Dot 2 */}
+        <span
+          className="
+            absolute
+            left-12
+            top-5
+            h-2
+            w-2
+            rounded-full
+            bg-gold
+          "
+        />
+
+        {/* Decorative Dot 3 */}
+        <span
+          className="
+            absolute
+            left-5
+            top-12
+            h-2
+            w-2
+            rounded-full
+            bg-gold
+          "
+        />
+
+        {/* Decorative Dot 4 */}
+        <span
+          className="
+            absolute
+            left-12
+            top-12
+            h-2
+            w-2
+            rounded-full
+            bg-gold
+          "
+        />
+
+        {/* Center Diamond */}
+        <div
+          className="
+            absolute
+            left-6
+            top-6
+            h-9
+            w-9
+            rotate-45
+            border
+            border-gold/70
+          "
+        />
+
+        {/* Outer Circle */}
+        <div
+          className="
+            absolute
+            left-2
+            top-2
+            h-6
+            w-6
+            rounded-full
+            border
+            border-gold/50
+          "
+        />
+
+        {/* Upper Decorative Circle */}
+        <div
+          className="
+            absolute
+            left-14
+            top-2
+            h-6
+            w-6
+            rounded-full
+            border
+            border-gold/50
+          "
+        />
+
+        {/* Lower Decorative Circle */}
+        <div
+          className="
+            absolute
+            left-2
+            top-14
+            h-6
+            w-6
+            rounded-full
+            border
+            border-gold/50
+          "
+        />
+      </div>
     </div>
   );
 }
