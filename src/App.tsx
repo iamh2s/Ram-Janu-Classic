@@ -6,6 +6,7 @@ import MainPage from "./components/Sections";
 import MusicToggle from "./components/MusicToggle";
 import SideNav from "./components/SideNav";
 import ContactPanel from "./components/ContactPanel";
+import Guide from "./components/Guide";
 import { KolamCorner } from "./components/Ornaments";
 
 import { weddingMusic } from "./audio/music";
@@ -195,6 +196,14 @@ export default function App() {
           onGone={() => setGone(true)}
         />
       )}
+
+      {/* =====================================================
+          WEBSITE GUIDE
+          Mounted once, right after the envelope has gone.
+          It opens 5 seconds later and never opens again.
+      ===================================================== */}
+
+      {gone && <Guide />}
 
     </div>
   );
